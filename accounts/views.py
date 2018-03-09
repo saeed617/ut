@@ -31,7 +31,7 @@ def login(request):
                     return redirect('/admin/')
                 else:
                     auth_views.login(request, user)
-                    return HttpResponse('Hello {0}'.format(username))
+                    return redirect(reverse('home', args=[user.id]))
             else:
                 forget = True
                 return render(request, 'registration/login.html', {'error': _('username or password is invalid.'),

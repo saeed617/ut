@@ -61,6 +61,9 @@
                             <h3>{{ user.username }}</h3>
                             <h5 style="color: darkgray">{{ user.email }}</h5>
                             <h6 style="color: darkgray">{{ user.profile.major }}</h6>
+                            {% if user.profile.avatar %}
+                                <img style="width: 30px;height: 30px" src="{{ user.profile.avatar.url }}">
+                                {% endif %}
                         </div>
                     </div>
 
@@ -69,10 +72,15 @@
                     <div class="card" style=";margin-bottom: 20px;border-left:rgba(41,53,99,0.82)  solid 10px">
                         <div class="card-body">
                             <div class="row align-items-center ">
-                                <!--<img style="margin-left: 10px" class="rounded-circle" src="photo_2017-10-27_19-34-24.jpg" height="50px">-->
+                                {% if user.profile.avatar %}
+                                <img style="width: 30px;height: 30px" src="{{ user.profile.avatar.url }}">
+                                {% endif %}
+
+
+
                                 <!--  <a style="margin-left: 10px" href=""></a>-->
                             </div>
-                            <p class="card-text" style="margin-top: 10px">{{ post.text }}</p>
+                            <p class="card-text" style="margin-top: 10px">{{ post.text | truncatechars:20 }}</p>
                             <div class="likeBar">
 
                                 <div class="likes">

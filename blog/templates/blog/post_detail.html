@@ -1,13 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8">
-            <div class="panel panel-defau"
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">{{ post.user.username }}<img style="width: 30px; height: 30px;" src="{{ user.profile.avatar.url }}"></div>
+                    <div class="panel-body">{{ post.text }}</div>
+                    <div class="panel-footer">
+                        <p>{{ post.like }}</p>
+                        <p>{{ post.dislike }}</p>
+                    </div>
+                </div>
+
+                {% for comment in comments %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ comment.user.username }}{% if comment.user.profile.avatar %}
+                            <img style="width: 30px; height: 30px;" src="{{ comment.user.profile.avatar.url }}">
+
+                        {% endif %}</div>
+                        <div class="panel-body">{{ comment.text }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-sm-2"></div>
         </div>
-        <div class="col-sm-2"></div>
     </div>
-</div>
 {% endblock %}

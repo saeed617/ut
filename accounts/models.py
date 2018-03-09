@@ -26,6 +26,7 @@ class Profile(models.Model):
     email_confirmed = models.BooleanField(default=False, verbose_name=_('email_confirmed'))
     student_id = models.IntegerField(validators=[MinValueValidator(10**8), MaxValueValidator(999999999)])
     major = models.ForeignKey(Major)
+    avatar = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
 
     class Meta:
         verbose_name = _('profile')

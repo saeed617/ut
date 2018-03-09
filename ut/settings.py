@@ -128,3 +128,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'mehransi95@gmail.com'
 EMAIL_HOST_PASSWORD = 'mahan24@$'
 EMAIL_PORT = 587
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

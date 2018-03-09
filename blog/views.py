@@ -10,5 +10,6 @@ def home(request, pk):
 
 
 def post_detail(request, pk):
-    post = get_object_or_404(models.Post, pk)
-    return render(request, 'blog/post_detail.html', {'post': post})
+    post = get_object_or_404(models.Post, pk=pk)
+    comments = models.Comment.objects.filter(post=post)
+    return render(request, 'blog/post_detail.html', {'post': post, 'comments':comments})
