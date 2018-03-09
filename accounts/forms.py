@@ -3,8 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
 from django.utils.translation import ugettext_lazy as _
 
+from accounts.models import Major
+
 
 class SignUpForm(forms.ModelForm):
+
     username = forms.CharField(label=_('username'),
                                widget=forms.TextInput(attrs={'class': 'form-control'}),
                                max_length=30,
@@ -21,11 +24,15 @@ class SignUpForm(forms.ModelForm):
                             widget=forms.EmailInput(attrs={'class': 'form-control'}),
                             required=True,
                             max_length=75)
+    student_id = forms.IntegerField(max_value=999999999, min_value=10**8,)
+
+    major = forms.ModelChoiceField(queryset=Major.objects.all())
+
 
     class Meta:
         model = User
         exclude = ['last_login', 'date_joined']
-        fields = ['username', 'email', 'password', 'confirm_password', ]
+        fields = ['username', 'email', 'password', 'confirm_password', 'student_id']
 
     def clean(self):
         super(SignUpForm, self).clean()

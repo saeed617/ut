@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, reverse, HttpResponse
 from django.contrib.auth import views as auth_views
@@ -9,11 +10,11 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
-
+from .models import Profile
 from . import forms
 from .tokens import account_activation_token
 from .decorators import ajax_required
-
+import re
 
 def login(request):
     if request.method == 'POST':
@@ -44,12 +45,28 @@ def register(request):
         register_form = forms.SignUpForm(request.POST)
         if register_form.is_valid():
             cd = register_form.cleaned_data
+            email = cd['email']
+            p = re.compile('[\w]+@ut\.ac\.ir')
+            if not p.match(email):
+                return render(request, 'registration/login.html', {'register_form': forms.SignUpForm(request.POST),
+                                                                   'login_form': forms.LoginForm(),
+                                                                   'error': 'incorrect email',
+                                                                   'active': 'register'
+                                                                   })
             user = register_form.save(commit=False)
-            user.is_active = False
+            q = re.compile("^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$")
+            if not q.match(cd['password']):
+                return render(request, 'registration/login.html', {'register_form': forms.SignUpForm(request.POST),
+                                                                   'login_form': forms.LoginForm(),
+                                                                   'error': 'weal password',
+                                                                   'active': 'register'
+                                                                   })
             user.set_password(cd['password'])
             user.save()
+            Profile.objects.create(user=user, student_id=cd['student_id'], major=cd['major'])
+            user.profile.save()
             # maybe a better subject
-            subject = 'Activate your accounts'
+            '''subject = 'Activate your accounts'
             current_site = get_current_site(request)
             message = render_to_string('accounts/account_activation_email.html', {
                 'user': user,
@@ -58,7 +75,7 @@ def register(request):
                 'token': account_activation_token.make_token(user),
             })
             send_mail(subject, message, 'admin@admin.com', [user.email])
-            # return redirect(reverse('accounts:account_activation_sent'))
+            # return redirect(reverse('accounts:account_activation_sent'))'''
             return HttpResponse('An email was sent to your email.')
         else:
             return render(request, 'registration/login.html', {'register_form': forms.SignUpForm(request.POST),
