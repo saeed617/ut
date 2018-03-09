@@ -24,13 +24,20 @@ def login(request):
             username = cd['username']
             password = cd['password']
             user = authenticate(request, username=username, password=password)
+            forget = False
             if user:
-                auth_views.login(request, user)
-                return HttpResponse('Hello {0}'.format(username))
+                if user.is_staff:
+                    auth_views.login(request, user)
+                    return redirect('/admin/')
+                else:
+                    auth_views.login(request, user)
+                    return HttpResponse('Hello {0}'.format(username))
             else:
+                forget = True
                 return render(request, 'registration/login.html', {'error': _('username or password is invalid.'),
                                                                    'register_form': forms.SignUpForm(),
                                                                    'login_form': forms.LoginForm(),
+                                                                   'forget':forget,
                                                                    'active': 'login'
                                                                    })
     else:
@@ -46,7 +53,15 @@ def register(request):
         if register_form.is_valid():
             cd = register_form.cleaned_data
             email = cd['email']
+            exist = User.objects.filter(email=email)
+            if exist:
+                return render(request, 'registration/login.html', {'register_form': forms.SignUpForm(request.POST),
+                                                                   'login_form': forms.LoginForm(),
+                                                                   'error': 'an user already exist with this email.',
+                                                                   'active': 'register'
+                                                                   })
             p = re.compile('[\w]+@ut\.ac\.ir')
+            # p = re.compile('[\w]+@gmail.com')
             if not p.match(email):
                 return render(request, 'registration/login.html', {'register_form': forms.SignUpForm(request.POST),
                                                                    'login_form': forms.LoginForm(),
@@ -62,11 +77,12 @@ def register(request):
                                                                    'active': 'register'
                                                                    })
             user.set_password(cd['password'])
+            user.is_active = False
             user.save()
             Profile.objects.create(user=user, student_id=cd['student_id'], major=cd['major'])
             user.profile.save()
             # maybe a better subject
-            '''subject = 'Activate your accounts'
+            subject = 'Activate your accounts'
             current_site = get_current_site(request)
             message = render_to_string('accounts/account_activation_email.html', {
                 'user': user,
@@ -74,9 +90,10 @@ def register(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            send_mail(subject, message, 'admin@admin.com', [user.email])
-            # return redirect(reverse('accounts:account_activation_sent'))'''
-            return HttpResponse('An email was sent to your email.')
+            print(message)
+            send_mail(subject, message, 'mehransi95@gmail.com', [user.email])
+            # return redirect(reverse('accounts:account_activation_sent'))
+            return HttpResponse('successful.')
         else:
             return render(request, 'registration/login.html', {'register_form': forms.SignUpForm(request.POST),
                                                                'login_form': forms.LoginForm(),
@@ -103,7 +120,7 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         # redirect user to home with a success message
-        return HttpResponse("Dear {0} your accounts successfully activate".format(user.username))
+        return redirect(reverse('login'))
     return HttpResponse('Invalid activation code.')
 
 

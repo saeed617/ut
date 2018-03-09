@@ -13,9 +13,6 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
-class EmailConfirmedManager(models.Manager):
-    def get_queryset(self):
-        return super(EmailConfirmedManager, self).get_queryset().filter(email_confirmed=True)
 
 
 class Major(models.Model):
@@ -33,11 +30,7 @@ class Profile(models.Model):
     class Meta:
         verbose_name = _('profile')
         verbose_name_plural = _('profiles')
-        default_manager_name = 'objects'
 
-    # adding managers
-    objects = models.Manager()
-    confirmed = EmailConfirmedManager()
 
     def __str__(self):
         return _("%(name)s's profile") % {'name': self.user.username}

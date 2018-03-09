@@ -14,6 +14,10 @@
         <div class="row">
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
+                <p id="validate_email"></p>
+                <p id="validate_password"></p>
+                <p id="match_passwords"></p>
+                <p id="validate_id"></p>
                 {% if error %}
                     <div class="alert alert-danger">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -33,7 +37,7 @@
                     <div class="panel-body">
                         <div class="tab-content">
                             <div id="login" class="tab-pane fade {% if active == 'login' %}in active{% endif %}">
-                                <form role='form' action="{% url 'accounts:login' %}" method="post">
+                                <form role='form' action="{% url 'login' %}" method="post">
                                     {% csrf_token %}
                                     {{ login_form }}
                                     <hr>
@@ -41,7 +45,7 @@
                                 </form>
                             </div>
                             <div id="register" class="tab-pane fade {% if active == 'register' %}in active{% endif %}">
-                                <form role='form' action="{% url 'accounts:register' %}" method="post">
+                                <form role='form' action="{% url 'register' %}" method="post">
                                     {% csrf_token %}
                                     {{ register_form }}
                                     <hr>
@@ -51,7 +55,9 @@
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <a href="#">forget password</a>
+                        {% if forget %}
+                            <a href="{% url 'password_reset' %}">forget password</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -63,20 +69,67 @@
 {% endblock %}
 
 {% block domready %}
-    $('#register #id_username').change(function () {
-        $.get(
-            '{% url "accounts:validate_username" %}' + '?username=' + $(this).val(),
-            function (data) {
-                $("#register #id_username").css('color', 'black');
-                if (data.is_taken) {
-                    var element = "<div class='alert alert-danger'>"
-                        + '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
-                        + data.error_message + "</div>";
-                    $("#register #id_username").before(element);
-                } else {
-                    $("#register #id_username").css('color', 'green');
+
+        $('#register #id_username').change(function () {
+            $.get(
+                '{% url "validate_username" %}' + '?username=' + $(this).val(),
+                function (data) {
+                    $("#register #id_username").css('color', 'black');
+                    if (data.is_taken) {
+                        var element = "<div class='alert alert-danger'>"
+                            + '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+                            + data.error_message + "</div>";
+                        $("#register #id_username").before(element);
+                    } else {
+                        $("#register #id_username").css('color', 'green');
+                    }
                 }
+            )
+        });
+        $('#register #id_email').on('keyup', function () {
+            $('#register #id_email').css('color', 'black');
+            var email = this.value;
+            var isOk = /(^[\w]+@ut\.ac\.ir)/i.test(email);
+            if (isOk) {
+                $('#register #id_email').css('color', 'green');
+                $('#validate_email').text("");
+            } else {
+                $('#validate_email').text('email have to end with @ut.ac.ir');
+                $('#validate_email').css('color', 'red');
             }
-        )
-    })
+        });
+        $('#register #id_password').on('keyup', function () {
+            var password = this.value;
+            var isOk1 = /(^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$)/i.test(password);
+             if (isOk1) {
+                $('#register #id_password').css('color', 'green');
+                $('#validate_password').text("");
+            } else {
+                $('#validate_password').text('password must contain at least one char,number and special char.');
+                $('#validate_password').css('color', 'red');
+            }
+        });
+        $('#register #id_confirm_password').on('keyup', function () {
+            var password1 = $('#register #id_password').val();
+            var password2 = $('#register #id_confirm_password').val();
+            if (password1 == password2) {
+                $('#register #id_confirm_password').css('color', 'green');
+                $('#match_passwords').text("");
+
+            } else {
+                $('#match_passwords').text("passwords do not match.");
+                $('#match_passwords').css('color', 'red');
+            }
+        });
+        $('#register #id_student_id').on('keyup', function () {
+            var id = $('#register #id_student_id').val();
+            if (id >= 100000000 & id <= 999999999) {
+                $('#register #id_student_id').css('color', 'green');
+                $('#validate_id').text("");
+            } else {
+                $('#validate_id').text("id must be of lenght 9 int");
+                $('#validate_id').css('color', 'red');
+            }
+        });
+
 {% endblock %}

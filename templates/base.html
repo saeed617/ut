@@ -32,8 +32,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'accounts:login' %}"><span class="glyphicon glyphicon-log-in"></span> login</a></li>
-                <li><a href="{% url 'accounts:register' %}"><span class="glyphicon glyphicon-user"></span> register</a></li>
+                <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> login</a></li>
+                <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> register</a></li>
             </ul>
             <ul class="nav navbar-nav">
                 <li><a href="#"><span class="glyphicon glyphicon-home"></span> home</a></li>
@@ -50,6 +50,8 @@
 <script>
     $(document).ready(function () {
         {% block domready %}{% endblock %}
+        $('input').addClass('form-control');
+        $('select').addClass('form-control')
     });
 </script>
 </body>
