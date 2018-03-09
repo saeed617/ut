@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load staticfiles %}
+{% block head %}
+    <style>
+        body {
+            font-family: 'Karma', serif;
+
+        }
+
+        .likeBar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-column-gap: 5px;
+        }
+
+        .likes {
+            grid-column: 8/9;
+        }
+
+        .dislikes {
+            grid-column: 9/10;
+        }
+
+        .comments {
+            grid-column: 10/11;
+        }
+
+        .view {
+            grid-column: 12/13;
+        }
+
+        .nnav {
+            background-color: rgba(41, 53, 99, 0.82);
+            color: white;
+        }
+
+        .hoverCase:hover {
+            box-shadow: 0px 0px white
+        }
+
+        .buuuut {
+            background-color: rgba(41, 53, 99, 0.82);
+            color: white;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+
+
+    <div class="container ">
+
+        <div class="row ">
+            <div class=" col-2"></div>
+            <div class=" col-8">
+                <div class="row" style="margin-bottom: 30px;margin-top: 20px;height:25vh  ">
+                    <!--<img style="margin-left:3px" class="rounded-circle" src="photo_2017-10-27_19-34-24.jpg" width="80vw" height="60%">-->
+
+                    <div class="align-items-center" style="margin-left: 50px">
+                        <div>
+                            <h3>{{ user.username }}</h3>
+                            <h5 style="color: darkgray">{{ user.email }}</h5>
+                            <h6 style="color: darkgray">{{ user.profile.major }}</h6>
+                        </div>
+                    </div>
+
+                </div>
+                {% for post in posts %}
+                    <div class="card" style=";margin-bottom: 20px;border-left:rgba(41,53,99,0.82)  solid 10px">
+                        <div class="card-body">
+                            <div class="row align-items-center ">
+                                <!--<img style="margin-left: 10px" class="rounded-circle" src="photo_2017-10-27_19-34-24.jpg" height="50px">-->
+                                <!--  <a style="margin-left: 10px" href=""></a>-->
+                            </div>
+                            <p class="card-text" style="margin-top: 10px">{{ post.text }}</p>
+                            <div class="likeBar">
+
+                                <div class="likes">
+                                    <div class=""><i class="material-icons">thumb_up</i></div>
+                                    <div class="align-self-center "><span style="font-size: 10px">{{ post.like }}</span>
+                                    </div>
+                                </div>
+                                <div class="dislikes">
+                                    <div class=""><i class="material-icons">thumb_down</i></div>
+                                    <div class="align-self-center "><span
+                                            style="font-size: 10px">{{ post.dislike }}</span>
+                                    </div>
+                                </div>
+                                <div class="comments">
+                                    <div class=""><i class="material-icons">comment</i></div>
+                                    <div class=" align-self-center "><span
+                                            style="font-size: 10px">{{ post.comments | length }}</span></div>
+                                </div>
+                                <div class="view">
+                                    <a href="{% url 'post_detail' post.pk %}">
+                                        <button onmouseover="aa()" type="button" class="buuuut btn btn-default">view
+                                        </button>
+                                    </a>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class=" col-2"></div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

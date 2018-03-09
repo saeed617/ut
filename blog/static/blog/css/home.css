@@ -1,0 +1,40 @@
+body {
+    font-family: 'Karma', serif;
+
+}
+
+.likeBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-column-gap: 5px;
+}
+
+.likes {
+    grid-column: 8/9;
+}
+
+.dislikes {
+    grid-column: 9/10;
+}
+
+.comments {
+    grid-column: 10/11;
+}
+
+.view {
+    grid-column: 12/13;
+}
+
+.nnav {
+    background-color: rgba(41, 53, 99, 0.82);
+    color: white;
+}
+
+.hoverCase:hover {
+    box-shadow: 0px 0px white
+}
+
+.buuuut {
+    background-color: rgba(41, 53, 99, 0.82);
+    color: white;
+}

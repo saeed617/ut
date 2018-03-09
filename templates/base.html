@@ -6,45 +6,191 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'accounts/css/base.css' %}">
+    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css?family=Karma:400,500" rel="stylesheet">
+    <style>
+        /*footer*/
+footer{
+  background-color:rgb(180, 180, 180);
+  box-shadow:0 1px 1px 0 rgba(0, 0, 0, 0.12);
+  box-sizing:border-box;
+  width:100%;
+  text-align:left;
+  font:bold 16px sans-serif;
+  padding:55px 50px;
+  margin-top:80px;
+  bottom:0;
+  color:black;
+}
+
+.footer-navigation h3{
+  margin:0;
+  font:normal 36px Cookie, cursive;
+  margin-bottom:20px;
+  color:black;
+}
+
+.footer-navigation h3 a{
+  text-decoration:none;
+  color:black;
+}
+
+
+.footer-navigation p.links a{
+  text-decoration:none;
+}
+
+.footer-navigation p.company-name{
+  font-size:14px;
+  font-weight:normal;
+  margin-top:20px;
+}
+
+@media (max-width:767px) {
+  .footer-contacts{
+    margin:30px 0;
+  }
+}
+
+.footer-contacts p{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.footer-contacts p a{
+  text-decoration:none;
+}
+
+.fa.footer-contacts-icon{
+  background-color:#33383b;
+  color:#fff;
+  font-size:18px;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  text-align:center;
+  line-height:38px;
+  margin:10px 15px 10px 0;
+}
+
+span.new-line-span{
+  display:block;
+  font-weight:normal;
+  display:block;
+  font-weight:normal;
+  font-size:14px;
+  line-height:2;
+}
+
+.footer-about h4{
+  display:block;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.footer-about p{
+  line-height:20px;
+  font-size:13px;
+  font-weight:normal;
+  margin:0;
+}
+
+div.social-links{
+  margin-top:20px;
+}
+
+.social-links a{
+  display:inline-block;
+  width:35px;
+  height:35px;
+  cursor:pointer;
+  background-color:#33383b;
+  border-radius:2px;
+  font-size:20px;
+  text-align:center;
+  line-height:35px;
+  margin-right:5px;
+  margin-bottom:5px;
+}
+
+    </style>
     <title>{% block title %}
     {% endblock %}</title>
     {% block head %}{% endblock %}
 </head>
 <body>
 
-<div class="jumbotron">
-    <h1></h1>
-    <p></p>
-</div>
-
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"></a>
+            <a class="navbar-brand" href="#">WebSiteName</a>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> login</a></li>
-                <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> register</a></li>
-            </ul>
+        <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li><a href="#"><span class="glyphicon glyphicon-home"></span> home</a></li>
-                <li><a href="#"></a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'home' user.pk %}">home</a></li>
+                    <li><a href="#">notfications</a></li>
+                {% endif %}
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+
+                    <li><a href="{% url 'home' user.pk %}"><span class="glyphicon glyphicon-user"></span> profile</a>
+                    </li>
+                    <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> logout</a></li>
+
+                {% else %}
+                    <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 </nav>
 {% block content %}
 {% endblock %}
 
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-6 footer-navigation">
+                <h3>
+                    ACM.UT.AC.IR
+                </h3>
+            </div>
+            <div class="col-md-4 col-sm-6 footer-contacts">
+                <div><span class="fa fa-map-marker footer-contacts-icon"> </span>
+                    <p><span class="new-line-span">21 django Street</span>Iran, Tehran</p>
+                </div>
+                <div><i class="fa fa-phone footer-contacts-icon"></i>
+                    <p class="footer-center-info email text-left">+98 111 1111</p>
+                </div>
+                <div><i class="fa fa-envelope footer-contacts-icon"></i>
+                    <p><a href="#" target="_blank">contact@ut.com</a></p>
+                </div>
+            </div>
+            <div class="clearfix visible-sm-block"></div>
+            <div class="col-md-4 footer-about">
+                <h4>About the Mibinan</h4>
+                <p>djago acm winter web tehran university.</p>
+                <div class="social-links social-icons">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                    <a href="#"><i class="fa fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
